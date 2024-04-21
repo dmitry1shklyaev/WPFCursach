@@ -27,21 +27,27 @@ namespace WPFCursach.Forms
     /// </summary>
     public partial class Teachers : Page
     {
-        SqlConnection connection = null;
+
         public Teachers()
         {
             InitializeComponent();
-            bindDataGrid.BindDataGrid("teachers", g1);
+            g1.ItemsSource = BaseHandler.DBase.TeacherController.GetTeachers();
+            //bindDataGrid.BindDataGrid("teachers", g1);
             LoadComboBox();
         }
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (g1.SelectedItem != null)
             {
-                DataRowView row = (DataRowView)g1.SelectedItem;
-                selectedTeacherTextBox.Text = row["teacher_fullname"].ToString();
-                selectedSubjectComboBox.Text = row["teacher_specialization"].ToString();
-                selectedAuditoryTextBox.Text = row["teacher_auditory"].ToString();
+                Teacher row = (Teacher)g1.SelectedItem;
+                if (row.teacher_subject == null) 
+                {
+                    MessageBox.Show("no sbj");
+                } 
+                selectedTeacherTextBox.Text = row.teacher_fullname;
+
+                //selectedSubjectComboBox.SelectedItem = row.GetSubject().name; //?
+                selectedAuditoryTextBox.Text = row.teacher_auditory.ToString();
             }
         }
         private void textBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -60,39 +66,28 @@ namespace WPFCursach.Forms
                 selectedSubjectComboBox.Items.Add(subject.name);
             }
         }
-        private int GetSubjectIDbyName(string subjectName, SqlConnection connection)
-        {
-            int subjectID = -1;
-
-            SqlCommand sql = new SqlCommand($"SELECT subject_id FROM Subjects WHERE subject_name = @subjectName", connection);
-            sql.Parameters.AddWithValue("@subjectName", subjectName);
-
-            using (SqlDataReader reader = sql.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    subjectID = reader.GetInt32(0);
-                }
-            }
-            return subjectID;
-        }
 
         private void addInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            connection = new SqlConnection();
-            connection.ConnectionString = ConfigurationManager.ConnectionStrings["connteacher"].ConnectionString;
-            connection.Open();
-            SqlCommand cmd = new SqlCommand($"INSERT INTO [Teachers] (teacher_fullname, teacher_specialization, teacher_auditory) VALUES (@teacher_fullname, @teacher_specialization, @teacher_auditory)", connection);
-            cmd.Parameters.AddWithValue("@teacher_fullname", selectedTeacherTextBox.Text);
-            cmd.Parameters.AddWithValue("@teacher_specialization", selectedSubjectComboBox.Text);
-            cmd.Parameters.AddWithValue("@teacher_auditory", selectedAuditoryTextBox.Text);
-
-            string subjectName = cmd.Parameters[1].Value.ToString();
-            cmd.Parameters[1].Value = GetSubjectIDbyName(subjectName, connection);
-
-            cmd.ExecuteNonQuery();
-            bindDataGrid.BindDataGrid("teachers",g1);
-            connection.Close();
+            try
+            {
+                Teacher teacher = new Teacher();
+                teacher.teacher_fullname = selectedTeacherTextBox.Text;
+                teacher.teacher_auditory = Convert.ToInt32(selectedAuditoryTextBox.Text);
+                foreach (Subject sbj in SubjectsController.GetSubject())
+                {
+                    if (sbj.name == selectedSubjectComboBox.Text) 
+                    {
+                        teacher.teacher_spec = sbj.id;
+                    }
+                }
+                
+                TeacherController.AddTeacher(teacher);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 

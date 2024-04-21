@@ -51,6 +51,58 @@ namespace BaseHandler.DBase
         //todo: edit
         //todo: delete
         //todo: add
+        public static void AddTeacher(Teacher teacher)
+        {
+            try
+            {
+                if (DBaseConnector.getBaseConnection().State != System.Data.ConnectionState.Open)
+                {
+                    throw new Exception("Unable to connect to the database");
+                }
+                string query = $"INSERT INTO Teachers (teacher_fullname, teacher_specialization, teacher_auditory ) VALUES (@name, @spec, @aud)";
+                using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
+                {
+                    command.Parameters.AddWithValue("@name", teacher.teacher_fullname);
+                    command.Parameters.AddWithValue("@spec", teacher.teacher_spec);
+                    command.Parameters.AddWithValue("@aud", teacher.teacher_auditory);
 
+                    int result = command.ExecuteNonQuery();
+                    if (result < 0)
+                    {
+                        throw new Exception("No data has been added");
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.ToString());
+            }
+        }
+
+        public static void DropTeacher(Teacher teacher)
+        {
+            try
+            {
+                if (DBaseConnector.getBaseConnection().State != System.Data.ConnectionState.Open)
+                {
+                    throw new Exception("Unable to connect to the database");
+                }
+                string query = $"DELETE FROM Teachers WHERE teacher_id = @id";
+                using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
+                {
+                    command.Parameters.AddWithValue("@id", teacher.teacher_id);
+
+                    int result = command.ExecuteNonQuery();
+                    if (result < 0)
+                    {
+                        throw new Exception("No data has been removed");
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.ToString());
+            }
+        }
     }
 }

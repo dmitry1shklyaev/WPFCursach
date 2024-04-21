@@ -15,7 +15,7 @@ namespace BaseHandler.DBase
         public static List<Subject> GetSubject()
         {
             SqlConnection con = new SqlConnection();
-            con.ConnectionString = ConfigurationManager.ConnectionStrings["connteacher"].ConnectionString;
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connteacher_andrew"].ConnectionString;
             con.Open();
             
             try
@@ -52,6 +52,36 @@ namespace BaseHandler.DBase
         //todo: edit
         //todo: delete
         //todo: add
+        public static Subject GetSubjectByID(int id)
+        {
+            SqlConnection con = DBaseConnector.getBaseConnection();
+            Subject subject = new Subject();
+            try
+            {
+                if (con.State != System.Data.ConnectionState.Open)
+                {
+                    throw new Exception("Unable to connect to the database");
+                }
+                SqlCommand cmd = con.CreateCommand();
+                cmd.CommandText = $"SELECT * FROM Subjects WHERE subject_id={id}";
+                SqlDataReader reader = cmd.ExecuteReader();
 
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        subject.id = reader.GetInt32(0);
+                        subject.name = reader.GetString(1);
+                    }
+                }
+                return subject;
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+            }
+            return null;
+        }
     }
+
 }

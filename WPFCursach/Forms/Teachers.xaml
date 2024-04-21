@@ -13,7 +13,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding teacher_id}" Header="ID" Width="50"/>
                 <DataGridTextColumn Binding="{Binding teacher_fullname}" Header="ФИО" Width="150"/>
-                <DataGridTextColumn Binding="{Binding teacher_specialization}" Header="Предмет" Width="150"/>
+                <DataGridTextColumn Binding="{Binding teacher_subject.name}" Header="Предмет" Width="150"/>
                 <DataGridTextColumn Binding="{Binding teacher_auditory}" Header="Кабинет" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
