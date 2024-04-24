@@ -146,6 +146,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="DBase\DBaseConnector.cs" />
     <Compile Include="DBase\Models\Subject.cs" />
     <Compile Include="DBase\Models\Teacher.cs" />

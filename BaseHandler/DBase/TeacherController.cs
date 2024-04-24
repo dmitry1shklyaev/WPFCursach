@@ -6,13 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BaseHandler.DBase
 {
     public class TeacherController
     {
-        //public List<Models.Teacher> Teachers;\
-
         public static List<Teacher> GetTeachers() 
         {
             List<Teacher> teachers = new List<Teacher>();
@@ -35,11 +34,12 @@ namespace BaseHandler.DBase
                         teacher.teacher_id = reader.GetInt32(0);
                         teacher.teacher_fullname = reader.GetString(1);
                         teacher.teacher_spec = reader.GetInt32(2);
+                        teacher.teacher_subject_name = SubjectsController.GetSubjectByID(teacher.teacher_spec).name;
                         teacher.teacher_auditory= reader.GetInt32(3);
                         teachers.Add(teacher);
                     }
                 }
-
+                reader.Close();
                 return teachers;
             }
             catch(Exception exc) 
@@ -48,9 +48,6 @@ namespace BaseHandler.DBase
             }
             return null;
         }
-        //todo: edit
-        //todo: delete
-        //todo: add
         public static void AddTeacher(Teacher teacher)
         {
             try
@@ -72,10 +69,11 @@ namespace BaseHandler.DBase
                         throw new Exception("No data has been added");
                     }
                 }
+                System.Windows.Forms.MessageBox.Show("Учитель успешно добавлен!");
             }
             catch (Exception exc)
             {
-                Console.WriteLine(exc.ToString());
+                MessageBox.Show(exc.ToString());
             }
         }
 
@@ -102,6 +100,57 @@ namespace BaseHandler.DBase
             catch (Exception exc)
             {
                 Console.WriteLine(exc.ToString());
+            }
+        }
+        public static void EditTeacher(Teacher teacher)
+        {
+            try
+            {
+                if (DBaseConnector.getBaseConnection().State != System.Data.ConnectionState.Open)
+                {
+                    throw new Exception("Unable to connect to the database");
+                }
+                    string queryToEdit = "UPDATE [Teachers] " +
+                        "SET teacher_fullname = @name, " +
+                        "teacher_specialization = @spec, " +
+                        "teacher_auditory = @aud " +
+                        "WHERE teacher_id = @t_id";
+                int editedTeacherID = -1;
+                using (SqlCommand command = new SqlCommand(queryToEdit, DBaseConnector.getBaseConnection()))
+                {
+                    var teachers = GetTeachers();
+                    for(int i = 0; i < teachers.Count(); i++)
+                    {
+                        if (teachers[i].teacher_id == teacher.teacher_id)
+                        {
+                            editedTeacherID = i;
+                            break;
+                        }
+                        else continue;
+                    }
+                    if (teachers != null)
+                    {
+                        if (editedTeacherID != -1)
+                        {
+                            teachers[editedTeacherID] = teacher;
+                        }
+                        else MessageBox.Show("Учителя с данным ID не существует."); // убрать потом
+                    }
+                    command.Parameters.AddWithValue("@t_id", teacher.teacher_id);
+                    command.Parameters.AddWithValue("@name", teacher.teacher_fullname);
+                    command.Parameters.AddWithValue("@spec", teacher.teacher_spec);
+                    command.Parameters.AddWithValue("@aud", teacher.teacher_auditory);
+
+                    int result = command.ExecuteNonQuery();
+                    if (result < 0)
+                    {
+                        throw new Exception("Ничего не было изменено.");
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.ToString());
             }
         }
     }

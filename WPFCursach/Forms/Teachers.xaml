@@ -4,26 +4,57 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPFCursach.Forms"
-      mc:Ignorable="d" 
-      d:DesignHeight="450"
-      Title="Teachers" Width="1019">
+      mc:Ignorable="d"
+      Title="Teachers" Height="400" Width="700">
 
-    <Grid Margin="0,0,108,0">
-        <DataGrid Name="g1" AutoGenerateColumns="False" Margin="0,0,400,0" SelectionChanged="DataGrid_SelectionChanged" VerticalAlignment="Stretch" HorizontalAlignment="Left">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding teacher_id}" Header="ID" Width="50"/>
-                <DataGridTextColumn Binding="{Binding teacher_fullname}" Header="ФИО" Width="150"/>
-                <DataGridTextColumn Binding="{Binding teacher_subject.name}" Header="Предмет" Width="150"/>
-                <DataGridTextColumn Binding="{Binding teacher_auditory}" Header="Кабинет" Width="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <TextBox x:Name="selectedTeacherTextBox" HorizontalAlignment="Center" Margin="634,134,0,0" TextWrapping="Wrap" Text="" Width="156" Height="30" FontSize="16" VerticalAlignment="Top"/>
-        <TextBox x:Name="selectedAuditoryTextBox" HorizontalAlignment="Center" Margin="634,264,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="156" Height="28" FontSize="16" PreviewTextInput="textBox_PreviewTextInput"/>
-        <Label Content="ФИО" HorizontalAlignment="Center" Margin="590,104,0,0" VerticalAlignment="Top" Width="89"/>
-        <Label Content="Предмет" HorizontalAlignment="Center" Margin="590,172,0,0" VerticalAlignment="Top" Width="89"/>
-        <Label Content="Кабинет" HorizontalAlignment="Center" Margin="590,238,0,0" VerticalAlignment="Top" Width="89"/>
-        <ComboBox x:Name="selectedSubjectComboBox" HorizontalAlignment="Left" Margin="694,203,0,0" VerticalAlignment="Top" Width="156" Height="30"/>
-        <Button x:Name="addInfoButton" Content="Добавить" HorizontalAlignment="Left" Margin="694,317,0,0" VerticalAlignment="Top" Height="26" Width="78" Click="addInfoButton_Click"/>
-        <Button x:Name="updateInfoButton" Content="Обновить" HorizontalAlignment="Left" Margin="772,317,0,0" VerticalAlignment="Top" Height="26" Width="78"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Column -->
+        <Grid Grid.Column="0" Margin="10,10,10,10">
+            <DataGrid Name="g1" AutoGenerateColumns="False" SelectionChanged="g1_SelectionChanged" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="teacherID" Binding="{Binding teacher_id}" Header="ID" Width="50"/>
+                    <DataGridTextColumn x:Name="teacherName" Binding="{Binding teacher_fullname}" Header="ФИО" Width="180"/>
+                    <DataGridTextColumn x:Name="teacherSpec" Binding="{Binding teacher_subject_name}" Header="Предмет" Width="*"/>
+                    <DataGridTextColumn x:Name="teacherAuditory" Binding="{Binding teacher_auditory}" Header="Кабинет" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- Right Column -->
+        <Grid Grid.Column="1" Margin="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Content="ФИО" HorizontalAlignment="Center" Grid.Row="0"/>
+            <TextBox x:Name="selectedTeacherTextBox" Grid.Row="1" FontSize="16"/>
+
+            <Label Content="Предмет" HorizontalAlignment="Center" Grid.Row="2"/>
+            <ComboBox x:Name="selectedSubjectComboBox" Grid.Row="3" FontSize="16"/>
+
+            <Label Content="Кабинет" HorizontalAlignment="Center" Grid.Row="4"/>
+            <TextBox x:Name="selectedAuditoryTextBox" Grid.Row="4" FontSize="16" PreviewTextInput="textBox_PreviewTextInput" Margin="0,26,0,0" Grid.RowSpan="2" Height="26" VerticalAlignment="Top"/>
+
+            <Label Content="ID" HorizontalAlignment="Center" Grid.Row="5" Margin="0,24,0,203"/>
+            <TextBox x:Name="selectedIdTextBox" Grid.Row="5" FontSize="16" PreviewTextInput="textBox_PreviewTextInput" Height="26" VerticalAlignment="Top" Margin="0,49,0,0" IsEnabled="False"/>
+
+            <Button x:Name="addInfoButton" Content="Добавить" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="26" Width="150" Click="addInfoButton_Click" Margin="0,122,0,0" FontWeight="Bold"/>
+            <Button x:Name="updateInfoButton" Content="Обновить" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="26" Width="150" Margin="0,91,0,0" FontWeight="Bold" Click="updateInfoButton_Click"/>
+            <Button x:Name="backToMenuButton" Content="В меню" Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="26" Width="150" Click="backToMenuButton_Click" Margin="0,215,0,0" FontWeight="Bold"/>
+            <Button x:Name="unselectCellsButton" Content="Снять выделение"  Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="26" Width="150" Click="unselectCellsButton_Click" Margin="0,184,0,0" FontWeight="Bold"/>
+            <Button x:Name="deleteInfoButton" Content="Удалить из БД"  Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="26" Width="150" Margin="0,153,0,0" FontWeight="Bold" Click="deleteInfoButton_Click" Foreground="Red"/>
+
+
+        </Grid>
     </Grid>
 </Page>

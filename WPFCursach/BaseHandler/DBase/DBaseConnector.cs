@@ -18,7 +18,7 @@ namespace BaseHandler.DBase
             {
                 try
                 {
-                    string connString = "Data Source=(local);Initial Catalog=Teacher_Manager;Integrated Security=True;MultipleActiveResultSets=True;";
+                    string connString = "Data Source=ANDREW-PC\\SQLEXPRESS01;Initial Catalog=Teacher_Manager;Integrated Security=True";
                     SqlConnection conn = new SqlConnection(connString);
                     conn.Open();
                     _conn = conn;

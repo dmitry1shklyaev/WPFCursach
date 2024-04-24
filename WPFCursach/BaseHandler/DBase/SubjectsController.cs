@@ -6,7 +6,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace BaseHandler.DBase
 {
@@ -53,37 +52,6 @@ namespace BaseHandler.DBase
         //todo: edit
         //todo: delete
         //todo: add
-        public static Subject GetSubjectByID(int id)
-        {
-            SqlConnection con = DBaseConnector.getBaseConnection();
-            Subject subject = new Subject();
-            try
-            {
-                if (con.State != System.Data.ConnectionState.Open)
-                {
-                    throw new Exception("Unable to connect to the database");
-                }
-                SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = $"SELECT * FROM Subjects WHERE subject_id={id}";
-                SqlDataReader reader = cmd.ExecuteReader();
 
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        subject.id = reader.GetInt32(0);
-                        subject.name = reader.GetString(1);
-                    }
-                }
-                reader.Close();
-                return subject;
-            }
-            catch (Exception exc)
-            {
-                // MessageBox.Show(exc.ToString()); тут ошибка
-            }
-            return null;
-        }
     }
-
 }

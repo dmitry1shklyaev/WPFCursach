@@ -12,26 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPFCursach.Forms;
 
-namespace WPFCursach.Forms
+namespace WPFCursach
 {
     /// <summary>
-    /// Логика взаимодействия для Page1.xaml
+    /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainMenu : Page
+    public partial class MainWindow : Window
     {
-        public MainMenu()
+        public MainWindow()
         {
             InitializeComponent();
-        }
-        private static void OpenTeacherWindow()
-        {
-            Classes.FrameSingleton.getFrame().Navigate(new Teachers());
-        }
+            Classes.FrameSingleton.setFrame(main);
+            Classes.FrameSingleton.getFrame().Navigate(new MainMenu());
 
-        private void TeachersButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenTeacherWindow();
         }
     }
 }

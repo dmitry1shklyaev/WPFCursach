@@ -12,11 +12,12 @@ namespace BaseHandler.DBase.Models
         public string teacher_fullname { get; set; }
         public int teacher_spec { get; set; }
         public int teacher_auditory { get; set; }
-        public Subject teacher_subject;
+        public string teacher_subject_name { get; set; } 
+        public Subject teacher_subject; // может это вообще убрать надо?
 
         public Teacher() 
         {
-            teacher_subject = SubjectsController.GetSubjectByID(teacher_spec);
+            teacher_subject = GetSubject();
         }
 
         public Subject GetSubject()

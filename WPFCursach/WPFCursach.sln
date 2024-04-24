@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFCursach", "WPFCursach\WP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseHandler", "BaseHandler\BaseHandler.csproj", "{1C7834CB-2733-4A97-B0A0-5A519AB92D2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestZone", "ConsoleTestZone\ConsoleTestZone.csproj", "{339758BB-5F4C-43D2-87C6-C82AB613F8A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C7834CB-2733-4A97-B0A0-5A519AB92D2B} = {1C7834CB-2733-4A97-B0A0-5A519AB92D2B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +26,10 @@ Global
 		{1C7834CB-2733-4A97-B0A0-5A519AB92D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C7834CB-2733-4A97-B0A0-5A519AB92D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C7834CB-2733-4A97-B0A0-5A519AB92D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{339758BB-5F4C-43D2-87C6-C82AB613F8A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{339758BB-5F4C-43D2-87C6-C82AB613F8A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{339758BB-5F4C-43D2-87C6-C82AB613F8A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{339758BB-5F4C-43D2-87C6-C82AB613F8A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

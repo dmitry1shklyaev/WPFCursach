@@ -1,0 +1,29 @@
+﻿<Page x:Class="WPFCursach.Forms.Teachers"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPFCursach.Forms"
+      mc:Ignorable="d" 
+      d:DesignHeight="450"
+      Title="Teachers" Width="1019">
+
+    <Grid Margin="0,0,108,0">
+        <DataGrid Name="g1" AutoGenerateColumns="False" Margin="0,0,400,0" SelectionChanged="DataGrid_SelectionChanged" VerticalAlignment="Stretch" HorizontalAlignment="Left">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding teacher_id}" Header="ID" Width="50"/>
+                <DataGridTextColumn Binding="{Binding teacher_fullname}" Header="ФИО" Width="150"/>
+                <DataGridTextColumn Binding="{Binding teacher_specialization}" Header="Предмет" Width="150"/>
+                <DataGridTextColumn Binding="{Binding teacher_auditory}" Header="Кабинет" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox x:Name="selectedTeacherTextBox" HorizontalAlignment="Center" Margin="634,134,0,0" TextWrapping="Wrap" Text="" Width="156" Height="30" FontSize="16" VerticalAlignment="Top"/>
+        <TextBox x:Name="selectedAuditoryTextBox" HorizontalAlignment="Center" Margin="634,264,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="156" Height="28" FontSize="16" PreviewTextInput="textBox_PreviewTextInput"/>
+        <Label Content="ФИО" HorizontalAlignment="Center" Margin="590,104,0,0" VerticalAlignment="Top" Width="89"/>
+        <Label Content="Предмет" HorizontalAlignment="Center" Margin="590,172,0,0" VerticalAlignment="Top" Width="89"/>
+        <Label Content="Кабинет" HorizontalAlignment="Center" Margin="590,238,0,0" VerticalAlignment="Top" Width="89"/>
+        <ComboBox x:Name="selectedSubjectComboBox" HorizontalAlignment="Left" Margin="694,203,0,0" VerticalAlignment="Top" Width="156" Height="30"/>
+        <Button x:Name="addInfoButton" Content="Добавить" HorizontalAlignment="Left" Margin="694,317,0,0" VerticalAlignment="Top" Height="26" Width="78" Click="addInfoButton_Click"/>
+        <Button x:Name="updateInfoButton" Content="Обновить" HorizontalAlignment="Left" Margin="772,317,0,0" VerticalAlignment="Top" Height="26" Width="78"/>
+    </Grid>
+</Page>

@@ -26,7 +26,9 @@ namespace WPFCursach.Forms
         }
         private static void OpenTeacherWindow()
         {
-            Classes.FrameSingleton.getFrame().Navigate(new Teachers());
+            NavigationWindow navWIN = new NavigationWindow();
+            navWIN.Content = new Teachers();
+            navWIN.Show();
         }
 
         private void TeachersButton_Click(object sender, RoutedEventArgs e)

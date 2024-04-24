@@ -5,13 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFCursach"
         mc:Ignorable="d"
-        Title="School Management System" Height="450" Width="800" ResizeMode="CanMinimize">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Frame Name="main" NavigationUIVisibility="Hidden" Grid.ColumnSpan="2">
+        <Frame Name="main" NavigationUIVisibility="Hidden">
         </Frame>
     </Grid>
 </Window>
