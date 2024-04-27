@@ -30,12 +30,10 @@ namespace WPFCursach.Forms
     /// </summary>
     public partial class Teachers : Page
     {
-
         public Teachers()
         {
             InitializeComponent();
-            g1.ItemsSource = BaseHandler.DBase.TeacherController.GetTeachers();
-            //bindDataGrid.BindDataGrid("teachers", g1);
+            g1.ItemsSource = TeacherController.GetTeachers();
             LoadComboBox();
         }
         private void textBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -56,7 +54,9 @@ namespace WPFCursach.Forms
 
         private void addInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedIdTextBox.Text != "" && (selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text == "" || selectedAuditoryTextBox.Text == ""))
+            if ((selectedIdTextBox.Text != "" || selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text == "" 
+                || selectedAuditoryTextBox.Text == "") || (selectedIdTextBox.Text != "" || selectedSubjectComboBox.Text == "" || 
+                selectedTeacherTextBox.Text.Trim() == "" || selectedAuditoryTextBox.Text.Trim() == ""))
             {
                 System.Windows.Forms.MessageBox.Show("Одно и/или несколько полей пусты!\nЗаполните все поля!");
                 return;
@@ -68,10 +68,7 @@ namespace WPFCursach.Forms
                 teacher.teacher_auditory = Convert.ToInt32(selectedAuditoryTextBox.Text);
                 foreach (Subject sbj in SubjectsController.GetSubject())
                 {
-                    if (sbj.name == selectedSubjectComboBox.Text) 
-                    {
-                        teacher.teacher_spec = sbj.id;
-                    }
+                    if (sbj.name == selectedSubjectComboBox.Text) teacher.teacher_spec = sbj.id;
                 }
                 TeacherController.AddTeacher(teacher);
                 Classes.FrameSingleton.getFrame().Navigate(new Teachers());
@@ -91,10 +88,6 @@ namespace WPFCursach.Forms
             if (g1.SelectedItem != null)
             {
                 Teacher row = (Teacher)g1.SelectedItem;
-                if (row.teacher_subject == null)
-                {
-                    System.Windows.Forms.MessageBox.Show("no sbj");
-                }
                 selectedTeacherTextBox.Text = row.teacher_fullname;
                 selectedSubjectComboBox.SelectedItem = row.GetSubject().name;
                 selectedAuditoryTextBox.Text = row.teacher_auditory.ToString();
@@ -116,17 +109,17 @@ namespace WPFCursach.Forms
 
         private void updateInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedIdTextBox.Text == "")
+            if (selectedIdTextBox.Text.Trim() == "")
             {
                 System.Windows.Forms.MessageBox.Show("Вы вписали данные учителя, но не выбрали его в таблице!");
                 return;
             }
-            else if(selectedIdTextBox.Text == "" || selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text == "" || selectedAuditoryTextBox.Text == "")
+            else if(selectedIdTextBox.Text.Trim() == "" || selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text.Trim() == "" || selectedAuditoryTextBox.Text.Trim() == "")
             {
                 System.Windows.Forms.MessageBox.Show("Одно и/или несколько полей пусты!\nЗаполните все поля!");
                 return;
             }
-            var editedTeacher = new Teacher();
+            Teacher editedTeacher = new Teacher();
             editedTeacher.teacher_id = int.Parse(selectedIdTextBox.Text);
             List<Subject> subjTemp = new List<Subject>();
             subjTemp = SubjectsController.GetSubject();
@@ -135,12 +128,13 @@ namespace WPFCursach.Forms
             {
                 if (subjTemp[i].name == selectedSubjectComboBox.Text)
                 {
-                    indexOfSubj = i;
+                    indexOfSubj = subjTemp[i].id;
+                    editedTeacher.teacher_subject = new Subject() { id=indexOfSubj, name=selectedSubjectComboBox.Text };
                     break;
                 }
             }
-            editedTeacher.teacher_spec = indexOfSubj + 1;
-            editedTeacher.teacher_fullname = selectedTeacherTextBox.Text;
+            editedTeacher.teacher_spec = indexOfSubj;
+            editedTeacher.teacher_fullname = selectedTeacherTextBox.Text.Trim();
             editedTeacher.teacher_auditory = int.Parse(selectedAuditoryTextBox.Text);
             TeacherController.EditTeacher(editedTeacher);
             zeroizeTextBoxes();

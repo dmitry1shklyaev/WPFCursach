@@ -147,8 +147,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBase\DBaseConnector.cs" />
+    <Compile Include="DBase\MarksController.cs" />
+    <Compile Include="DBase\Models\Mark.cs" />
+    <Compile Include="DBase\Models\Pupil.cs" />
+    <Compile Include="DBase\Models\Schoolclass.cs" />
     <Compile Include="DBase\Models\Subject.cs" />
     <Compile Include="DBase\Models\Teacher.cs" />
+    <Compile Include="DBase\PupilsController.cs" />
+    <Compile Include="DBase\SchoolclassesController.cs" />
     <Compile Include="DBase\SubjectsController.cs" />
     <Compile Include="DBase\TeacherController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace WPFCursach.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для Page1.xaml
+    /// Логика взаимодействия для MainMenu.xaml
     /// </summary>
     public partial class MainMenu : Page
     {
@@ -24,14 +24,30 @@ namespace WPFCursach.Forms
         {
             InitializeComponent();
         }
-        private static void OpenTeacherWindow()
+
+        private void TeachersButton_Click(object sender, RoutedEventArgs e)
         {
             Classes.FrameSingleton.getFrame().Navigate(new Teachers());
         }
 
-        private void TeachersButton_Click(object sender, RoutedEventArgs e)
+        private void PupilsButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenTeacherWindow();
+            Classes.FrameSingleton.getFrame().Navigate(new Pupils());
+        }
+
+        private void ClassesButton_Click(object sender, RoutedEventArgs e)
+        {
+            Classes.FrameSingleton.getFrame().Navigate(new ClassesView());
+        }
+
+        private void SubjectsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Classes.FrameSingleton.getFrame().Navigate(new Subjects());
+        }
+
+        private void JournalButton_Click(object sender, RoutedEventArgs e)
+        {
+            Classes.FrameSingleton.getFrame().Navigate(new Journal());
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BaseHandler.DBase
 {
@@ -25,7 +26,7 @@ namespace BaseHandler.DBase
                 }
                 catch (Exception exc)
                 {
-                    Console.WriteLine(exc.Message);
+                    MessageBox.Show(exc.ToString());
                     return null;
                 }
             }

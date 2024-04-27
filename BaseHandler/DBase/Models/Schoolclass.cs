@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace BaseHandler.DBase.Models
 {
-    public class Subject
+    public class Schoolclass
     {
-        public int id { get; set;}
-        public string name { get; set; }
-        public Mark mark {  get; set; }
+        public int class_id { get; set; }
+        public string class_grade { get; set; }
     }
 }

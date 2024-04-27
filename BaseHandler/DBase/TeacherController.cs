@@ -44,7 +44,7 @@ namespace BaseHandler.DBase
             }
             catch(Exception exc) 
             {
-                Console.WriteLine(exc.Message);
+                MessageBox.Show(exc.ToString());
             }
             return null;
         }
@@ -56,7 +56,7 @@ namespace BaseHandler.DBase
                 {
                     throw new Exception("Unable to connect to the database");
                 }
-                string query = $"INSERT INTO Teachers (teacher_fullname, teacher_specialization, teacher_auditory ) VALUES (@name, @spec, @aud)";
+                string query = $"INSERT INTO [Teachers] (teacher_fullname, teacher_specialization, teacher_auditory) VALUES (@name, @spec, @aud)";
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
                 {
                     command.Parameters.AddWithValue("@name", teacher.teacher_fullname);
@@ -85,7 +85,7 @@ namespace BaseHandler.DBase
                 {
                     throw new Exception("Unable to connect to the database");
                 }
-                string query = $"DELETE FROM Teachers WHERE teacher_id = @id";
+                string query = $"DELETE FROM [Teachers] WHERE teacher_id = @id";
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
                 {
                     command.Parameters.AddWithValue("@id", teacher.teacher_id);
@@ -99,7 +99,7 @@ namespace BaseHandler.DBase
             }
             catch (Exception exc)
             {
-                Console.WriteLine(exc.ToString());
+                MessageBox.Show(exc.ToString());
             }
         }
         public static void EditTeacher(Teacher teacher)
@@ -110,7 +110,7 @@ namespace BaseHandler.DBase
                 {
                     throw new Exception("Unable to connect to the database");
                 }
-                    string queryToEdit = "UPDATE [Teachers] " +
+                string queryToEdit = "UPDATE [Teachers] " +
                         "SET teacher_fullname = @name, " +
                         "teacher_specialization = @spec, " +
                         "teacher_auditory = @aud " +

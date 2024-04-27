@@ -5,13 +5,23 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPFCursach.Forms"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="Page1">
+      d:DesignHeight="700" d:DesignWidth="1200"
+      Title="MenuPage">
 
     <Grid>
-        <Button Content="Ученики" HorizontalAlignment="Center" VerticalAlignment="Center" Height="64" Width="128"/>
-        <Button Content="Журнал" HorizontalAlignment="Left" VerticalAlignment="Center" Height="64" Width="128" Margin="496,0,0,0"/>
-        <Button x:Name="TeachersButton" Content="Учителя" HorizontalAlignment="Left" VerticalAlignment="Center" Height="64" Width="128" Margin="178,0,0,0" Click="TeachersButton_Click"/>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Label Content="Добро пожаловать!" HorizontalAlignment="Center" Margin="0,149,0,0" VerticalAlignment="Top" Width="248" Grid.Column="1" FontSize="24" FontWeight="Bold"/>
+        <Button x:Name="PupilsButton" Content="Ученики" HorizontalAlignment="Left" VerticalAlignment="Center" Height="64" Width="128" Grid.Column="1" Click="PupilsButton_Click"/>
+        <Button x:Name="ClassesButton" Content="Классы" HorizontalAlignment="Center" VerticalAlignment="Center" Height="64" Width="128" Grid.Column="1" Click="ClassesButton_Click"/>
+        <Button x:Name="TeachersButton" Content="Учителя" HorizontalAlignment="Left" VerticalAlignment="Center" Height="64" Width="128" Click="TeachersButton_Click" Margin="262,0,0,0"/>
+        <Button x:Name="SubjectsButton" Content="Предметы" VerticalAlignment="Center" Height="64" Grid.Column="1" Margin="269,0,0,0" Click="SubjectsButton_Click"/>
+        <Button x:Name="JournalButton" Content="Журнал" VerticalAlignment="Center" Height="64" Grid.Column="2" Margin="5,0,264,0" Click="JournalButton_Click"/>
+
 
     </Grid>
 </Page>
