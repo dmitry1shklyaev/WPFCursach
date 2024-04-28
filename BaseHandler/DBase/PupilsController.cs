@@ -26,7 +26,7 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = $"SELECT * FROM Pupils";
+                cmd.CommandText = $"SELECT * FROM [Pupils]";
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -63,7 +63,8 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = $"SELECT * FROM Pupils WHERE pupil_id={id}";
+                cmd.CommandText = $"SELECT * FROM [Pupils] WHERE pupil_id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -168,6 +169,21 @@ namespace BaseHandler.DBase
                 if (DBaseConnector.getBaseConnection().State != System.Data.ConnectionState.Open)
                 {
                     throw new Exception("Unable to connect to the database");
+                }
+                foreach (var mark in MarksController.GetMarks())
+                {
+                    if (mark.pupil.pupil_id == pupil.pupil_id)
+                    {
+                        DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"У ученика \"{pupil.pupil_name}\" проставлена " +
+                            $"четвертная оценка по предмету " +
+                            $"\"{mark.subject.name}\".\n" +
+                            $"Вы действительно хотите удалить оценку по этому предмету?", "Удалить оценку?", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            MarksController.DropMark(mark);
+                        }
+                        else return;
+                    }
                 }
                 string query = $"DELETE FROM [Pupils] WHERE pupil_id = @id";
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))

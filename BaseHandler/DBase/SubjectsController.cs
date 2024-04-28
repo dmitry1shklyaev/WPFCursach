@@ -61,7 +61,8 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = $"SELECT * FROM Subjects WHERE subject_id={id}";
+                cmd.CommandText = $"SELECT * FROM [Subjects] WHERE subject_id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -152,7 +153,20 @@ namespace BaseHandler.DBase
                         return;
                     }
                 }
-
+                foreach (var mark in MarksController.GetMarks())
+                {
+                    if (mark.subject.name == subject.name)
+                    {
+                        DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"По данному предмету проставлены четвертные оценки. " +
+                        $"Вы действительно хотите удалить эти оценки?", "Удалить оценки?", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            MarksController.DropMarkBySubjectID(subject.id);
+                            break;
+                        }
+                        else return;
+                    }
+                }
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
                 {
                     command.Parameters.AddWithValue("@id", subject.id);

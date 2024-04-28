@@ -45,8 +45,7 @@ namespace WPFCursach.Forms
         }
         private void LoadComboBox()
         {
-            var subjectsParse = SubjectsController.GetSubject();
-            foreach (Subject subject in subjectsParse)
+            foreach (Subject subject in SubjectsController.GetSubject())
             {
                 selectedSubjectComboBox.Items.Add(subject.name);
             }

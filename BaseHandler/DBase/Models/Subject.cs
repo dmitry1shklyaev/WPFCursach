@@ -10,6 +10,5 @@ namespace BaseHandler.DBase.Models
     {
         public int id { get; set;}
         public string name { get; set; }
-        public Mark mark {  get; set; }
     }
 }

@@ -13,7 +13,8 @@ namespace BaseHandler.DBase.Models
         public int teacher_spec { get; set; }
         public int teacher_auditory { get; set; }
         public string teacher_subject_name { get; set; }
-        public Subject teacher_subject; // может это вообще убрать надо?
+
+        public Subject teacher_subject;
 
         public Teacher()
         {

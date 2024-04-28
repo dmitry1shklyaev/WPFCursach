@@ -123,7 +123,7 @@ namespace WPFCursach.Forms
             mark.pupil = selectedPupil;
             foreach(var m in MarksController.GetMarks())
             {
-                if(m.pupil.pupil_id == mark.pupil.pupil_id && mark.subject.id == m.subject.id)
+                if(m.pupil.pupil_id == mark.pupil.pupil_id && m.subject.id == mark.subject.id)
                 {
                     mark.id = m.id;
                     break;

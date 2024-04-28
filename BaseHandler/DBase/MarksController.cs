@@ -83,7 +83,7 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = "SELECT * FROM Marks";
+                cmd.CommandText = "SELECT * FROM [Marks]";
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -158,6 +158,31 @@ namespace BaseHandler.DBase
                 }
             }
             catch (Exception exc)
+            {
+                MessageBox.Show(exc.ToString());
+            }
+        }
+        public static void DropMarkBySubjectID(int subject_id)
+        {
+            try
+            {
+                if (DBaseConnector.getBaseConnection().State != System.Data.ConnectionState.Open)
+                {
+                    throw new Exception("Unable to connect to the database");
+                }
+                string query = $"DELETE FROM [Marks] WHERE mark_subj = @id";
+                using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
+                {
+                    command.Parameters.AddWithValue("@id", subject_id);
+
+                    int result = command.ExecuteNonQuery();
+                    if (result < 0)
+                    {
+                        throw new Exception("No data has been removed");
+                    }
+                }
+            }
+            catch(Exception exc)
             {
                 MessageBox.Show(exc.ToString());
             }

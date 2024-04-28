@@ -23,7 +23,7 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = "SELECT * FROM Teachers";
+                cmd.CommandText = "SELECT * FROM [Teachers]";
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows) 

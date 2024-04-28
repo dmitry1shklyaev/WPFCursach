@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -32,7 +33,7 @@ namespace WPFCursach.Forms
         }
         private void LoadComboBox()
         {
-            var classesParse = SchoolclassesController.SortClassesInAscendingOrder(SchoolclassesController.GetClasses());
+            var classesParse = ClassesView.SortClassesInAscendingOrder(SchoolclassesController.GetClasses());
             foreach (Schoolclass sc in classesParse)
             {
                 selectedClassComboBox.Items.Add(sc.class_grade);

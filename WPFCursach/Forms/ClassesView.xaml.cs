@@ -42,7 +42,7 @@ namespace WPFCursach.Forms
         }
         private void LoadComboBox()
         {
-            foreach(var cl in SchoolclassesController.SortClassesInAscendingOrder(SchoolclassesController.GetClasses()))
+            foreach(var cl in SortClassesInAscendingOrder(SchoolclassesController.GetClasses()))
             {
                 selectClassComboBox.Items.Add(cl.class_grade);
                 deleteClassComboBox.Items.Add(cl.class_grade);
@@ -92,12 +92,29 @@ namespace WPFCursach.Forms
             Schoolclass sc = new Schoolclass() { class_grade = classToAdd };
             SchoolclassesController.AddClass(sc);
             selectClassComboBox.Items.Clear();
-            foreach(Schoolclass sClass in SchoolclassesController.SortClassesInAscendingOrder(SchoolclassesController.GetClasses()))
+            foreach(Schoolclass sClass in SortClassesInAscendingOrder(SchoolclassesController.GetClasses()))
             {
                 selectClassComboBox.Items.Add(sClass.class_grade);
             }
             MessageBox.Show($"{classToAdd} класс успешно добавлен!");
             Classes.FrameSingleton.getFrame().Navigate(new ClassesView());
+        }
+        public static List<Schoolclass> SortClassesInAscendingOrder(List<Schoolclass> classes)
+        {
+            return classes.OrderBy(c =>
+            {
+                var parts = c.class_grade.Split(' ');
+                int number = int.Parse(parts[0]);
+                string letter = parts[1];
+
+                // Обработка особых случаев для "10" и "11"
+                if (number == 10)
+                    number = 100;
+                else if (number == 11)
+                    number = 110;
+
+                return number * 100 + (int)letter[0];
+            }).ToList();
         }
 
         private void backToMenu_Click(object sender, RoutedEventArgs e)
@@ -124,6 +141,7 @@ namespace WPFCursach.Forms
                 }
             }
             SchoolclassesController.DropSchoolclass(sc);
+            MessageBox.Show($"{sc.class_grade} класс успешно удалён!");
             Classes.FrameSingleton.getFrame().Navigate(new ClassesView());
         }
     }

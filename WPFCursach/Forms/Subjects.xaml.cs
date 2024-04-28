@@ -49,14 +49,14 @@ namespace WPFCursach.Forms
                 System.Windows.Forms.MessageBox.Show("Предмет не должен содержать в себе цифру/ы!\nПредмет не добавлен!");
                 return;
             }
-            else if(writtenSubjectTextBox.Text.Trim() == "")
+            else if (writtenSubjectTextBox.Text.Trim() == "")
             {
                 System.Windows.Forms.MessageBox.Show("Пожалуйста, введите название предмета, который вы хотите добавить!");
                 return;
             }
-            foreach(var sbj in SubjectsController.GetSubject())
+            foreach (var sbj in SubjectsController.GetSubject())
             {
-                if(sbj.name == writtenSubjectTextBox.Text)
+                if (sbj.name == writtenSubjectTextBox.Text)
                 {
                     System.Windows.Forms.MessageBox.Show("Такой предмет уже существует!");
                     return;
@@ -70,28 +70,19 @@ namespace WPFCursach.Forms
 
         private void deleteSubjectButton_Click(object sender, RoutedEventArgs e)
         {
+            if(subjectsComboBox.Text == "")
+            {
+                System.Windows.Forms.MessageBox.Show("Выберите предмет для удаления!");
+                return;
+            }
             Subject subject = new Subject();
             subject.name = subjectsComboBox.Text;
-            foreach(var subj in SubjectsController.GetSubject())
+            foreach (var subj in SubjectsController.GetSubject())
             {
-                if(subj.name == subject.name)
+                if (subj.name == subject.name)
                 {
                     subject.id = subj.id;
                     break;
-                }
-            }
-            
-            foreach(var mark in MarksController.GetMarks())
-            {
-                if(mark.subject.name == subject.name)
-                {
-                    DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"По данному предмету проставлены четвертные оценки.\n" +
-                        $"Вы действительно хотите удалить предмет?", "Удалить предмет?", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        MarksController.DropMark(mark);
-                    }
-                    else return;
                 }
             }
             SubjectsController.DropSubject(subject);

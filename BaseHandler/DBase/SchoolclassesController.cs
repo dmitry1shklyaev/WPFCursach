@@ -64,7 +64,8 @@ namespace BaseHandler.DBase
                     throw new Exception("Unable to connect to the database");
                 }
                 SqlCommand cmd = con.CreateCommand();
-                cmd.CommandText = $"SELECT * FROM Schoolclasses WHERE class_id={id}";
+                cmd.CommandText = $"SELECT * FROM [Schoolclasses] WHERE class_id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 if (reader.HasRows)
@@ -108,23 +109,6 @@ namespace BaseHandler.DBase
             {
                 MessageBox.Show(exc.ToString());
             }
-        }
-        public static List<Schoolclass> SortClassesInAscendingOrder(List<Schoolclass> classes)
-        {
-            return classes.OrderBy(c =>
-            {
-                var parts = c.class_grade.Split(' ');
-                int number = int.Parse(parts[0]);
-                string letter = parts[1];
-
-                // Обработка особых случаев для "10" и "11"
-                if (number == 10)
-                    number = 100;
-                else if (number == 11)
-                    number = 110;
-
-                return number * 100 + (int)letter[0];
-            }).ToList();
         }
         public static void DropSchoolclass(Schoolclass sc)
         {
@@ -186,7 +170,6 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been removed");
                     }
-                    MessageBox.Show($"{sc.class_grade} класс успешно удалён!");
                 }
             }
             catch (Exception exc)
