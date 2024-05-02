@@ -40,7 +40,7 @@
 
         <Button x:Name="addClass" Grid.Column="2" Content="Добавить класс" HorizontalAlignment="Left" Margin="97,233,0,0" VerticalAlignment="Top" Height="45" Width="175" FontWeight="Bold" Click="addClass_Click"/>
 
-        <Button x:Name="backToMenu" Grid.Column="2" Content="Вернуться в меню" HorizontalAlignment="Left" Margin="118,417,0,0" VerticalAlignment="Top" Height="35" Width="134" Click="backToMenu_Click"/>
+        <Button x:Name="backToMenu" Grid.Column="2" Content="Вернуться в меню" HorizontalAlignment="Left" Margin="97,486,0,0" VerticalAlignment="Top" Height="45" Width="175" Click="backToMenu_Click" Foreground="#FF0004FF"/>
         <Label Grid.Column="1" Content="Удаление класса" HorizontalAlignment="Left" Margin="71,334,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold"/>
         <ComboBox x:Name="deleteClassComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="88,397,0,0" VerticalAlignment="Top" Width="175" Height="32" FontSize="16"/>
         <Button x:Name="deleteClassButton" Grid.Column="1" Content="Удалить класс" HorizontalAlignment="Left" Margin="86,486,0,0" VerticalAlignment="Top" Height="45" Width="175" FontWeight="Bold" Foreground="Red" Click="deleteClassButton_Click"/>

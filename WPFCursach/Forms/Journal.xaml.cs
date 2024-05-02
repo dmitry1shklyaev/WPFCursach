@@ -47,30 +47,16 @@ namespace WPFCursach.Forms
         {
             Pupil selectedPupil = g4.SelectedItem as Pupil;
             string selectedSubject = getSelectedSubjectName();
-            int selectedSubjectID = -1;
-            foreach (Subject sbj in SubjectsController.GetSubject())
-            {
-                if (selectedSubject == sbj.name)
-                {
-                    selectedSubjectID = sbj.id;
-                    break;
-                }
-            }
+            int selectedSubjectID = SubjectsController.GetSubject().FirstOrDefault(s => s.name == selectedSubject)?.id ?? 0;
 
             if (selectedPupil != null)
             {
-                ifMarkIsSetTextBox.Text = "Нет";
-                markTextBox.Text = "";
+                var mark = MarksController.GetMarks()
+                    .FirstOrDefault(m => m.pupil.pupil_name == selectedPupil.pupil_name &&
+                                            (m.subject.id == selectedSubjectID || m.subject.name == selectedSubject));
 
-                foreach (var mark in MarksController.GetMarks())
-                {
-                    if (mark.pupil.pupil_name == selectedPupil.pupil_name && (mark.subject.id == selectedSubjectID || mark.subject.name == selectedSubject))
-                    {
-                        ifMarkIsSetTextBox.Text = "Да";
-                        markTextBox.Text = mark.grade.ToString();
-                        break;
-                    }
-                }
+                ifMarkIsSetTextBox.Text = mark != null ? "Да" : "Нет";
+                markTextBox.Text = mark?.grade.ToString() ?? "";
             }
         }
         private void g5_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -91,52 +77,53 @@ namespace WPFCursach.Forms
 
         private void setMarkButton_Click(object sender, RoutedEventArgs e)
         {
-            if(markComboBox.Text == "")
+            if (markComboBox.Text == "")
             {
                 System.Windows.Forms.MessageBox.Show("Вы не выбрали оценку!");
                 return;
             }
-            else if (((g4.SelectedItem == null || g5.SelectedItem == null) && markComboBox.Text != "") && ifMarkIsSetTextBox.Text != "")
+            else if ((((g4.SelectedItem == null || g5.SelectedItem == null) && markComboBox.Text != "") && ifMarkIsSetTextBox.Text == "") 
+                || ((g4.SelectedItem != null && g5.SelectedItem == null) && markComboBox.Text != ""))
             {
                 System.Windows.Forms.MessageBox.Show("Сначала выберите ученика в первой таблице, " +
                     "затем выберите во второй колонке предмет, по которому вы хотите поставить оценку ученику");
                 return;
             }
+
             int settedGrade = int.Parse(markComboBox.Text);
             Pupil selectedPupil = g4.SelectedItem as Pupil;
-
             var selectedSubject = getSelectedSubjectName();
+            var subjectID = SubjectsController.GetSubject().FirstOrDefault(s => s.name == selectedSubject)?.id;
 
-            int subjectID = -1;
-            foreach(Subject sbj in SubjectsController.GetSubject())
+            var mark = new Mark
             {
-                if(selectedSubject == sbj.name)
+                grade = settedGrade,
+                subject = subjectID != null ? SubjectsController.GetSubjectByID(subjectID.Value) : null,
+                pupil = selectedPupil
+            };
+
+            var existingMark = MarksController.GetMarks().FirstOrDefault(m => m.pupil.pupil_id == mark.pupil.pupil_id && m.subject.id == mark.subject?.id);
+            if (existingMark != null)
+            {
+                mark.id = existingMark.id;
+            }
+
+            if (MarksController.CheckDuplicatesMarks(mark) == 0)
+            {
+                if (MarksController.AddMark(mark) == true)
                 {
-                    subjectID = sbj.id;
-                    break;
+                    System.Windows.Forms.MessageBox.Show($"Оценка \"{mark.grade}\" ученику \"{mark.pupil.pupil_name}\" по предмету \"{mark.subject.name}\" успешно проставлена!");
                 }
             }
-            var subjectByID = SubjectsController.GetSubjectByID(subjectID);
-            Mark mark = new Mark();
-            mark.grade = settedGrade;
-            mark.subject = subjectByID;
-            mark.pupil = selectedPupil;
-            foreach(var m in MarksController.GetMarks())
-            {
-                if(m.pupil.pupil_id == mark.pupil.pupil_id && m.subject.id == mark.subject.id)
-                {
-                    mark.id = m.id;
-                    break;
-                }
-            }
-            if(MarksController.CheckDuplicatesMarks(mark) == 0) MarksController.AddMark(mark);
-            else if(MarksController.CheckDuplicatesMarks(mark) == 1)
+            else if (MarksController.CheckDuplicatesMarks(mark) == 1)
             {
                 DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"Оценка у ученика \"{selectedPupil.pupil_name}\" по предмету \"{selectedSubject}\" уже имеется!\nИзменить оценку?", "Изменить оценку?", MessageBoxButtons.YesNo);
-                if(dialogResult == DialogResult.Yes)
+                if (dialogResult == DialogResult.Yes)
                 {
-                    MarksController.EditMark(mark);
-                    System.Windows.Forms.MessageBox.Show($"Оценка успешно изменена на \"{mark.grade}\"!");
+                    if (MarksController.EditMark(mark) == true)
+                    {
+                        System.Windows.Forms.MessageBox.Show($"Оценка успешно изменена на \"{mark.grade}\"!");
+                    }
                 }
                 else return;
             }

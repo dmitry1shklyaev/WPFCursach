@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="Добавить предмет" HorizontalAlignment="Center" Margin="0,123,0,0" VerticalAlignment="Top" Width="232" FontSize="24" FontWeight="Bold"/>
-        <TextBox x:Name="writtenSubjectTextBox" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="316" Height="118" FontSize="24" TextAlignment="Center" Margin="0,277,0,0"/>
+        <TextBox x:Name="writtenSubjectTextBox" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="316" Height="118" FontSize="24" TextAlignment="Center" Margin="0,277,0,0" MaxLength="50"/>
         <Label x:Name="toWriteSubjectHint" Content="Введите название нового предмета:" HorizontalAlignment="Center" Margin="0,230,0,0" VerticalAlignment="Top" FontSize="20"/>
         <Button x:Name="addNewSubjectButton" Content="Добавить" HorizontalAlignment="Center" Margin="0,412,0,0" VerticalAlignment="Top" Height="40" Width="120" FontSize="16" Click="addNewSubjectButton_Click"/>
         <Button x:Name="backToMenuButton" Content="Вернуться в меню" HorizontalAlignment="Left" Margin="496,492,0,0" VerticalAlignment="Top" Height="40" Width="208" FontSize="16" Click="backToMenuButton_Click" Grid.ColumnSpan="2"/>

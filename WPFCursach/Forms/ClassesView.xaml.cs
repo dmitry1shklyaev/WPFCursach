@@ -32,7 +32,7 @@ namespace WPFCursach.Forms
         }
         private void LoadComboBoxesToAddClass()
         {
-            addClassDigit.ItemsSource = new List<string>() {"1","2","3","4","5","6","7","8","9","10","11"};
+            addClassDigit.ItemsSource = Enumerable.Range(1, 11).Select(i => i.ToString());
             addClassLetter.ItemsSource = new List<string>()
             {
                 "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М",
@@ -61,7 +61,7 @@ namespace WPFCursach.Forms
         }
         public static List<Pupil> PupilsFromOneClass(string cl)
         {
-            var allPupils = PupilsController.GetPupils();
+            List<Pupil> allPupils = PupilsController.GetPupils();
             if (!allPupils.Any()) return null;
             pupils = new List<Pupil>();
             foreach (var pupil in allPupils)
@@ -80,30 +80,30 @@ namespace WPFCursach.Forms
                 return;
             }
 
-            string classToAdd = $"{addClassDigit.Text}" + " " + $"{addClassLetter.Text}";
-            foreach (Schoolclass temp in SchoolclassesController.GetClasses())
+            string classToAdd = $"{addClassDigit.Text} {addClassLetter.Text}";
+
+            if (SchoolclassesController.GetClasses().Any(sclass => sclass.class_grade == classToAdd))
             {
-                if(temp.class_grade == classToAdd)
-                {
-                    MessageBox.Show("Класс, который вы хотите добавить, уже существует.\nВыберите другой класс.");
-                    return;
-                }
+                MessageBox.Show("Класс, который вы хотите добавить, уже существует.\nВыберите другой класс.");
+                return;
             }
-            Schoolclass sc = new Schoolclass() { class_grade = classToAdd };
-            SchoolclassesController.AddClass(sc);
+
+            Schoolclass sc = new Schoolclass { class_grade = classToAdd };
+            if (SchoolclassesController.AddClass(sc))
+            {
+                MessageBox.Show($"{classToAdd} класс успешно добавлен!");
+            }
+            else return;
+
             selectClassComboBox.Items.Clear();
-            foreach(Schoolclass sClass in SortClassesInAscendingOrder(SchoolclassesController.GetClasses()))
-            {
-                selectClassComboBox.Items.Add(sClass.class_grade);
-            }
-            MessageBox.Show($"{classToAdd} класс успешно добавлен!");
+            selectClassComboBox.ItemsSource = SortClassesInAscendingOrder(SchoolclassesController.GetClasses()).Select(sclass => sclass.class_grade);
             Classes.FrameSingleton.getFrame().Navigate(new ClassesView());
         }
         public static List<Schoolclass> SortClassesInAscendingOrder(List<Schoolclass> classes)
         {
             return classes.OrderBy(c =>
             {
-                var parts = c.class_grade.Split(' ');
+                string[] parts = c.class_grade.Split(' ');
                 int number = int.Parse(parts[0]);
                 string letter = parts[1];
 
@@ -124,21 +124,17 @@ namespace WPFCursach.Forms
 
         private void deleteClassButton_Click(object sender, RoutedEventArgs e)
         {
-            if(deleteClassComboBox.Text == "")
+            if (deleteClassComboBox.Text == "")
             {
                 MessageBox.Show("Выберите класс для удаления!");
                 return;
             }
-            Schoolclass sc = new Schoolclass();
-            sc.class_grade = deleteClassComboBox.Text;
-
-            foreach(var cl in SchoolclassesController.GetClasses())
+            Schoolclass sc = SchoolclassesController.GetClasses()
+                .FirstOrDefault(cl => cl.class_grade == deleteClassComboBox.Text);
+            if (sc == null)
             {
-                if(cl.class_grade == deleteClassComboBox.Text)
-                {
-                    sc.class_id = cl.class_id;
-                    break;
-                }
+                MessageBox.Show("Класс не найден!");
+                return;
             }
             SchoolclassesController.DropSchoolclass(sc);
             MessageBox.Show($"{sc.class_grade} класс успешно удалён!");

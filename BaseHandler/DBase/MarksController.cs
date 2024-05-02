@@ -15,7 +15,7 @@ namespace BaseHandler.DBase
 {
     public class MarksController
     {
-        public static void AddMark(Mark mark)
+        public static bool AddMark(Mark mark)
         {
             try
             {
@@ -35,12 +35,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been added");
                     }
-                    MessageBox.Show($"Оценка \"{mark.grade}\" ученику \"{mark.pupil.pupil_name}\" по предмету \"{mark.subject.name}\" успешно проставлена!");
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
         public static int CheckDuplicatesMarks(Mark mark)
@@ -107,7 +108,7 @@ namespace BaseHandler.DBase
             }
             return null;
         }
-        public static void EditMark(Mark mark)
+        public static bool EditMark(Mark mark)
         {
             try
             {
@@ -130,14 +131,16 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("Ничего не было изменено.");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
-        public static void DropMark(Mark mark)
+        public static bool DropMark(Mark mark)
         {
             try
             {
@@ -155,11 +158,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been removed");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
         public static void DropMarkBySubjectID(int subject_id)

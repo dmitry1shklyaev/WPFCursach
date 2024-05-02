@@ -48,7 +48,7 @@ namespace BaseHandler.DBase
             }
             return null;
         }
-        public static void AddTeacher(Teacher teacher)
+        public static bool AddTeacher(Teacher teacher)
         {
             try
             {
@@ -68,12 +68,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been added");
                     }
+                    return true;
                 }
-                System.Windows.Forms.MessageBox.Show("Учитель успешно добавлен!");
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
 
@@ -102,7 +103,7 @@ namespace BaseHandler.DBase
                 MessageBox.Show(exc.ToString());
             }
         }
-        public static void EditTeacher(Teacher teacher)
+        public static bool EditTeacher(Teacher teacher)
         {
             try
             {
@@ -134,8 +135,8 @@ namespace BaseHandler.DBase
                         {
                             teachers[editedTeacherID] = teacher;
                         }
-                        else MessageBox.Show("Учителя с данным ID не существует."); // убрать потом
                     }
+                    else return false;
                     command.Parameters.AddWithValue("@t_id", teacher.teacher_id);
                     command.Parameters.AddWithValue("@name", teacher.teacher_fullname);
                     command.Parameters.AddWithValue("@spec", teacher.teacher_spec);
@@ -146,11 +147,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("Ничего не было изменено.");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
     }

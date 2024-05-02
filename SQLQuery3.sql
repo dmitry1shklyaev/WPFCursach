@@ -1,0 +1,1 @@
+delete from pupils where pupil_class = 10

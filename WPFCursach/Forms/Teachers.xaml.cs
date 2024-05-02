@@ -62,14 +62,20 @@ namespace WPFCursach.Forms
             }
             try
             {
-                Teacher teacher = new Teacher();
-                teacher.teacher_fullname = selectedTeacherTextBox.Text;
-                teacher.teacher_auditory = Convert.ToInt32(selectedAuditoryTextBox.Text);
-                foreach (Subject sbj in SubjectsController.GetSubject())
+                Teacher teacher = new Teacher
                 {
-                    if (sbj.name == selectedSubjectComboBox.Text) teacher.teacher_spec = sbj.id;
+                    teacher_fullname = selectedTeacherTextBox.Text,
+                    teacher_auditory = Convert.ToInt32(selectedAuditoryTextBox.Text),
+                    teacher_spec = SubjectsController.GetSubject()
+                        .FirstOrDefault(s => s.name == selectedSubjectComboBox.Text)?.id ?? -1
+                };
+
+                if (TeacherController.AddTeacher(teacher) == true)
+                {
+                    System.Windows.Forms.MessageBox.Show($"Учитель \"{teacher.teacher_fullname}\" успешно добавлен!");
                 }
-                TeacherController.AddTeacher(teacher);
+                else return;
+
                 Classes.FrameSingleton.getFrame().Navigate(new Teachers());
             }
             catch (Exception ex)
@@ -113,60 +119,60 @@ namespace WPFCursach.Forms
                 System.Windows.Forms.MessageBox.Show("Вы вписали данные учителя, но не выбрали его в таблице!");
                 return;
             }
-            else if(selectedIdTextBox.Text.Trim() == "" || selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text.Trim() == "" || selectedAuditoryTextBox.Text.Trim() == "")
+            else if(selectedIdTextBox.Text.Trim() == "" || selectedSubjectComboBox.Text == "" ||
+                selectedTeacherTextBox.Text.Trim() == "" || selectedAuditoryTextBox.Text.Trim() == "")
             {
                 System.Windows.Forms.MessageBox.Show("Одно и/или несколько полей пусты!\nЗаполните все поля!");
                 return;
             }
-            Teacher editedTeacher = new Teacher();
-            editedTeacher.teacher_id = int.Parse(selectedIdTextBox.Text);
-            List<Subject> subjTemp = new List<Subject>();
-            subjTemp = SubjectsController.GetSubject();
-            int indexOfSubj = -1;
-            for (int i = 0; i < subjTemp.Count(); i++)
+            Teacher editedTeacher = new Teacher
             {
-                if (subjTemp[i].name == selectedSubjectComboBox.Text)
-                {
-                    indexOfSubj = subjTemp[i].id;
-                    editedTeacher.teacher_subject = new Subject() { id=indexOfSubj, name=selectedSubjectComboBox.Text };
-                    break;
-                }
+                teacher_id = int.Parse(selectedIdTextBox.Text),
+                teacher_subject = SubjectsController.GetSubject()
+           .FirstOrDefault(s => s.name == selectedSubjectComboBox.Text),
+                teacher_fullname = selectedTeacherTextBox.Text.Trim(),
+                teacher_auditory = int.Parse(selectedAuditoryTextBox.Text)
+            };
+
+            editedTeacher.teacher_spec = editedTeacher.teacher_subject?.id ?? -1;
+
+            if (TeacherController.EditTeacher(editedTeacher) == true)
+            {
+                zeroizeTextBoxes();
+                System.Windows.Forms.MessageBox.Show("Изменение прошло успешно!");
             }
-            editedTeacher.teacher_spec = indexOfSubj;
-            editedTeacher.teacher_fullname = selectedTeacherTextBox.Text.Trim();
-            editedTeacher.teacher_auditory = int.Parse(selectedAuditoryTextBox.Text);
-            TeacherController.EditTeacher(editedTeacher);
-            zeroizeTextBoxes();
-            System.Windows.Forms.MessageBox.Show("Изменение прошло успешно!");
+            else return;
+
             Classes.FrameSingleton.getFrame().Navigate(new Teachers());
         }
 
         private void deleteInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            if(selectedIdTextBox.Text == "" || selectedSubjectComboBox.Text == "" || selectedTeacherTextBox.Text == "" || selectedAuditoryTextBox.Text == "")
+            if(selectedIdTextBox.Text == "" || selectedSubjectComboBox.Text == "" ||
+                selectedTeacherTextBox.Text == "" || selectedAuditoryTextBox.Text == "")
             {
-                System.Windows.Forms.MessageBox.Show("Выберите учителя для удаления!");
+                System.Windows.Forms.MessageBox.Show("Выберите учителя для удаления или допишите информацию об учителе полностью!");
                 return;
             }
-            Teacher teacher = new Teacher();
-            teacher.teacher_id = int.Parse(selectedIdTextBox.Text);
-            teacher.teacher_fullname = selectedTeacherTextBox.Text;
-            teacher.teacher_auditory = int.Parse(selectedAuditoryTextBox.Text);
-            var subjects = SubjectsController.GetSubject();
-            int subjectID = -1;
-            for(int i = 0; i < subjects.Count(); i++)
+            int subjectID = SubjectsController.GetSubject()
+        .FirstOrDefault(s => s.name == selectedSubjectComboBox.Text)?.id ?? -1;
+
+            if (subjectID == -1)
             {
-                var subject = subjects[i];
-                if (subject.name == selectedSubjectComboBox.Text)
-                {
-                    subjectID = i;
-                    break;
-                }
-                else continue;
+                System.Windows.Forms.MessageBox.Show("Предмет не найден!");
+                return;
             }
-            teacher.teacher_spec = subjectID;
+
+            Teacher teacher = new Teacher
+            {
+                teacher_id = int.Parse(selectedIdTextBox.Text),
+                teacher_fullname = selectedTeacherTextBox.Text,
+                teacher_spec = subjectID,
+                teacher_auditory = int.Parse(selectedAuditoryTextBox.Text)
+            };
+
             TeacherController.DropTeacher(teacher);
-            System.Windows.Forms.MessageBox.Show("Удаление прошло успешно!");
+            System.Windows.Forms.MessageBox.Show($"Удаление учителя \"{teacher.teacher_fullname}\" прошло успешно!");
             Classes.FrameSingleton.getFrame().Navigate(new Teachers());
         }
     }

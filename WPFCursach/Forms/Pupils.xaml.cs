@@ -34,10 +34,7 @@ namespace WPFCursach.Forms
         private void LoadComboBox()
         {
             var classesParse = ClassesView.SortClassesInAscendingOrder(SchoolclassesController.GetClasses());
-            foreach (Schoolclass sc in classesParse)
-            {
-                selectedClassComboBox.Items.Add(sc.class_grade);
-            }
+            selectedClassComboBox.ItemsSource = classesParse.Select(sc => sc.class_grade);
         }
 
         private void g2_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -60,22 +57,27 @@ namespace WPFCursach.Forms
         private void addInfoButton_Click(object sender, RoutedEventArgs e)
         {
             if (selectedIdTextBox.Text != "" || selectedClassComboBox.Text == "" || selectedPupilTextBox.Text.Trim() == "")
-            {
+                {
                 System.Windows.Forms.MessageBox.Show("Одно и/или несколько полей пусты!\nПожалуйста, заполните все поля!");
                 return;
             }
+
             try
             {
-                Pupil pupil = new Pupil();
-                pupil.pupil_name = selectedPupilTextBox.Text;
-                foreach(Schoolclass sc in SchoolclassesController.GetClasses())
+                Pupil pupil = new Pupil
                 {
-                    if (sc.class_grade == selectedClassComboBox.Text) pupil.pupil_class.class_id = sc.class_id;
+                    pupil_name = selectedPupilTextBox.Text,
+                    pupil_class = SchoolclassesController.GetClasses().FirstOrDefault(sc => sc.class_grade == selectedClassComboBox.Text)
+                };
+
+                if (PupilsController.AddPupil(pupil))
+                {
+                    System.Windows.Forms.MessageBox.Show("Ученик успешно добавлен!");
+                    Classes.FrameSingleton.getFrame().Navigate(new Pupils());
                 }
-                PupilsController.AddPupil(pupil);
-                Classes.FrameSingleton.getFrame().Navigate(new Pupils());
+                else return;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.ToString());
             }
@@ -94,42 +96,40 @@ namespace WPFCursach.Forms
 
         private void updateInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedIdTextBox.Text == "")
+            if (string.IsNullOrEmpty(selectedIdTextBox.Text))
             {
                 System.Windows.Forms.MessageBox.Show("Вы вписали данные ученика, но не выбрали его в таблице!");
                 return;
             }
-            else if (selectedIdTextBox.Text == "" || selectedClassComboBox.Text == "" || selectedPupilTextBox.Text.Trim() == "")
+            else if (string.IsNullOrEmpty(selectedIdTextBox.Text) || string.IsNullOrEmpty(selectedClassComboBox.Text) || string.IsNullOrEmpty(selectedPupilTextBox.Text.Trim()))
             {
                 System.Windows.Forms.MessageBox.Show("Одно и/или несколько полей пусты!\nЗаполните все поля!");
                 return;
             }
-            Pupil editedPupil = new Pupil();
-            editedPupil.pupil_id = int.Parse(selectedIdTextBox.Text);
-            List<Schoolclass> classesTemp = new List<Schoolclass>();
-            classesTemp = SchoolclassesController.GetClasses();
-            int indexOfClass = -1;
-            for(int i = 0; i < classesTemp.Count(); i++)
-            {
-                if (classesTemp[i].class_grade ==  selectedClassComboBox.Text)
-                {
-                    indexOfClass = classesTemp[i].class_id;
-                    break;
-                }
-            }
-            if (indexOfClass == -1)
+
+            int pupilId = int.Parse(selectedIdTextBox.Text);
+            var selectedClass = SchoolclassesController.GetClasses().FirstOrDefault(c => c.class_grade == selectedClassComboBox.Text);
+            if (selectedClass == null)
             {
                 System.Windows.Forms.MessageBox.Show("Класс не был найден");
                 return;
             }
 
-            editedPupil.pupil_name = selectedPupilTextBox.Text;
-            editedPupil.pupil_class.class_id = indexOfClass;
-            editedPupil.pupil_class.class_grade = SchoolclassesController.GetSchoolclassByID(editedPupil.pupil_class.class_id).class_grade;
-            PupilsController.EditPupil(editedPupil);
-            zeroizeTextBoxes();
-            System.Windows.Forms.MessageBox.Show("Изменение прошло успешно!");
+            Pupil editedPupil = new Pupil
+            {
+                pupil_id = pupilId,
+                pupil_name = selectedPupilTextBox.Text,
+                pupil_class = selectedClass
+            };
+
+            if (PupilsController.EditPupil(editedPupil) == true)
+            {
+                zeroizeTextBoxes();
+                System.Windows.Forms.MessageBox.Show("Изменение прошло успешно!");
+            }
+            else return;
             Classes.FrameSingleton.getFrame().Navigate(new Pupils());
+
         }
 
         private void deleteInfoButton_Click(object sender, RoutedEventArgs e)
@@ -139,23 +139,30 @@ namespace WPFCursach.Forms
                 System.Windows.Forms.MessageBox.Show("Выберите ученика для удаления!");
                 return;
             }
-            Pupil pupil = new Pupil();
-            pupil.pupil_name = selectedPupilTextBox.Text;
-            pupil.pupil_id = int.Parse(selectedIdTextBox.Text);
-            var classes = SchoolclassesController.GetClasses();
-            int classID = -1;
-            for(int i = 0; i < classes.Count(); i++)
+
+            int classID = SchoolclassesController.GetClasses()
+                .FirstOrDefault(c => c.class_grade == selectedClassComboBox.Text)
+                ?.class_id ?? -1;
+
+            if (classID == -1)
             {
-                Schoolclass tempClass = classes[i];
-                if(tempClass.class_grade == selectedClassComboBox.Text)
-                {
-                    classID = i;
-                    break;
-                }
+                System.Windows.Forms.MessageBox.Show("Класс не найден!");
+                return;
             }
-            pupil.pupil_class.class_id = classID;
-            PupilsController.DropPupil(pupil);
-            System.Windows.Forms.MessageBox.Show("Удаление прошло успешно!");
+
+            Pupil pupil = new Pupil
+            {
+                pupil_name = selectedPupilTextBox.Text,
+                pupil_id = int.Parse(selectedIdTextBox.Text),
+                pupil_class = new Schoolclass { class_id = classID }
+            };
+
+            if (PupilsController.DropPupil(pupil) == true)
+            {
+                System.Windows.Forms.MessageBox.Show("Удаление прошло успешно!");
+            }
+            else return;
+
             Classes.FrameSingleton.getFrame().Navigate(new Pupils());
         }
     }

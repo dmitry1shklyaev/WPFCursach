@@ -83,7 +83,7 @@ namespace BaseHandler.DBase
             return null;
         }
 
-        public static void AddSubject(Subject subject)
+        public static bool AddSubject(Subject subject)
         {
             try
             {
@@ -102,15 +102,16 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been added");
                     }
-                    MessageBox.Show($"Предмет \"{subject.name}\" успешно добавлен!");
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
-        public static void DropSubject(Subject subject)
+        public static bool DropSubject(Subject subject)
         {
             try
             {
@@ -121,52 +122,39 @@ namespace BaseHandler.DBase
 
                 string query = $"DELETE FROM [Subjects] WHERE subject_id = @id";
 
-                List<Teacher> teachers = null;
-                List<string> teachersNames = null;
-                foreach(var teacher in TeacherController.GetTeachers())
+                var teachersWithSubject = TeacherController.GetTeachers()
+                    .Where(teacher => teacher.teacher_spec == subject.id)
+                    .ToList();
+
+                if (teachersWithSubject.Any())
                 {
-                    if(teacher.teacher_spec == subject.id)
-                    {
-                        if (teachers.IsNullOrEmpty() && teachersNames.IsNullOrEmpty())
-                        {
-                            teachers = new List<Teacher>();
-                            teachersNames = new List<string>();
-                        }
-                        teachers.Add(teacher);
-                        teachersNames.Add(teacher.teacher_fullname);
-                    }
-                }
-                if(teachers != null && teachers.Any() && teachersNames != null && teachersNames.Any())
-                {
-                    string message = string.Join(Environment.NewLine, teachersNames);
+                    string message = string.Join(Environment.NewLine, teachersWithSubject.Select(teacher => teacher.teacher_fullname));
                     DialogResult dialogResult = MessageBox.Show($"На данный момент предмет преподаётся следующими учителями:\n\n{message}\n" +
                         $"\nВы действительно хотите удалить предмет?", "Подтвердить удаление", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
+                    if (dialogResult != DialogResult.Yes)
                     {
-                        foreach (var teacher in teachers)
-                        {
-                            TeacherController.DropTeacher(teacher);
-                        }
+                        return false;
                     }
-                    else
-                    {
-                        return;
-                    }
+
+                    teachersWithSubject.ForEach(TeacherController.DropTeacher);
                 }
-                foreach (var mark in MarksController.GetMarks())
+
+                var marksWithSubject = MarksController.GetMarks()
+                    .Where(mark => mark.subject.name == subject.name)
+                    .ToList();
+
+                if (marksWithSubject.Any())
                 {
-                    if (mark.subject.name == subject.name)
-                    {
-                        DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"По данному предмету проставлены четвертные оценки. " +
+                    DialogResult dialogResult = MessageBox.Show($"По данному предмету проставлены четвертные оценки. " +
                         $"Вы действительно хотите удалить эти оценки?", "Удалить оценки?", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            MarksController.DropMarkBySubjectID(subject.id);
-                            break;
-                        }
-                        else return;
+                    if (dialogResult != DialogResult.Yes)
+                    {
+                        return false;
                     }
+
+                    marksWithSubject.ForEach(m => MarksController.DropMarkBySubjectID(m.subject.id));
                 }
+
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
                 {
                     command.Parameters.AddWithValue("@id", subject.id);
@@ -176,12 +164,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been removed");
                     }
-                    MessageBox.Show($"Предмет \"{subject.name}\" успешно удалён!");
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
     }

@@ -66,7 +66,6 @@ namespace BaseHandler.DBase
                 cmd.CommandText = $"SELECT * FROM [Pupils] WHERE pupil_id = @id";
                 cmd.Parameters.AddWithValue("@id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
-
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -85,7 +84,7 @@ namespace BaseHandler.DBase
             return null;
         }
 
-        public static void AddPupil(Pupil pupil)
+        public static bool AddPupil(Pupil pupil)
         {
             try
             {
@@ -104,16 +103,17 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been added");
                     }
+                    return true;
                 }
-                System.Windows.Forms.MessageBox.Show("Ученик успешно добавлен!");
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
 
-        public static void EditPupil(Pupil pupil)
+        public static bool EditPupil(Pupil pupil)
         {
             try
             {
@@ -121,48 +121,35 @@ namespace BaseHandler.DBase
                 {
                     throw new Exception("Unable to connect to the database");
                 }
+
                 string queryToEdit = "UPDATE [Pupils] " +
                         "SET pupil_fullname = @name, " +
                         "pupil_class = @class " +
                         "WHERE pupil_id = @p_id";
-                int editedPupilID = -1;
+
                 using (SqlCommand command = new SqlCommand(queryToEdit, DBaseConnector.getBaseConnection()))
                 {
-                    var pupils = GetPupils();
-                    for(int i = 0; i < pupils.Count(); i++)
-                    {
-                        if (pupils[i].pupil_id == pupil.pupil_id)
-                        {
-                            editedPupilID = i;
-                            break;
-                        }
-                        else continue;
-                    }
-                    if(pupils != null)
-                    {
-                        if (editedPupilID != -1)
-                        {
-                            pupils[editedPupilID] = pupil;
-                        }
-                        else MessageBox.Show("Ученика с данным ID не существует."); // фикс потом
-                    }
                     command.Parameters.AddWithValue("@name", pupil.pupil_name);
                     command.Parameters.AddWithValue("@class", pupil.pupil_class.class_id);
                     command.Parameters.AddWithValue("@p_id", pupil.pupil_id);
 
                     int result = command.ExecuteNonQuery();
+
                     if (result < 0)
                     {
                         throw new Exception("Ничего не было изменено.");
                     }
+
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
-        public static void DropPupil(Pupil pupil)
+        public static bool DropPupil(Pupil pupil)
         {
             try
             {
@@ -182,7 +169,7 @@ namespace BaseHandler.DBase
                         {
                             MarksController.DropMark(mark);
                         }
-                        else return;
+                        else return false;
                     }
                 }
                 string query = $"DELETE FROM [Pupils] WHERE pupil_id = @id";
@@ -195,11 +182,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been removed");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
     }

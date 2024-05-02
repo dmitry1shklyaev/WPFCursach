@@ -85,7 +85,7 @@ namespace BaseHandler.DBase
             }
             return null;
         }
-        public static void AddClass(Schoolclass sc)
+        public static bool AddClass(Schoolclass sc)
         {
             try
             {
@@ -103,14 +103,16 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been added");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
-        public static void DropSchoolclass(Schoolclass sc)
+        public static bool DropSchoolclass(Schoolclass sc)
         {
             try
             {
@@ -121,24 +123,10 @@ namespace BaseHandler.DBase
 
                 string query = $"DELETE FROM [Schoolclasses] WHERE class_id = @id";
 
-                List<Pupil> pupils = null;
-                List<string> pupilsNames = null;
+                var pupilsToRemove = PupilsController.GetPupils().Where(p => p.pupil_class.class_id == sc.class_id);
+                var pupilsNames = pupilsToRemove.Select(p => p.pupil_name).ToList();
 
-                foreach(var pupil in PupilsController.GetPupils())
-                {
-                    if(pupil.pupil_class.class_id == sc.class_id)
-                    {
-                        if(pupils.IsNullOrEmpty() && pupilsNames.IsNullOrEmpty())
-                        {
-                            pupils = new List<Pupil>();
-                            pupilsNames = new List<string>();
-                        }
-                        pupils.Add(pupil);
-                        pupilsNames.Add(pupil.pupil_name);
-                    }
-                }
-
-                if(pupils != null && pupils.Any() && pupilsNames != null && pupilsNames.Any())
+                if (pupilsToRemove.Any())
                 {
                     string message = string.Join(Environment.NewLine, pupilsNames);
                     DialogResult dialogResult = MessageBox.Show($"На данный момент в {sc.class_grade} классе имеются данные ученики:\n\n{message}\n" +
@@ -146,7 +134,6 @@ namespace BaseHandler.DBase
 
                     if (dialogResult == DialogResult.Yes)
                     {
-                        var pupilsToRemove = pupils.Where(p => p.pupil_class.class_id == sc.class_id);
                         foreach (var pupil in pupilsToRemove)
                         {
                             var marksToRemove = MarksController.GetMarks().Where(m => m.pupil.pupil_id == pupil.pupil_id);
@@ -154,12 +141,11 @@ namespace BaseHandler.DBase
                             {
                                 MarksController.DropMark(mark);
                             }
-                            PupilsController.DropPupil(pupil);
+                            if (!PupilsController.DropPupil(pupil)) return false;
                         }
                     }
-                    else return;
+                    else return false;
                 }
-
 
                 using (SqlCommand command = new SqlCommand(query, DBaseConnector.getBaseConnection()))
                 {
@@ -170,11 +156,13 @@ namespace BaseHandler.DBase
                     {
                         throw new Exception("No data has been removed");
                     }
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
+                return false;
             }
         }
     }

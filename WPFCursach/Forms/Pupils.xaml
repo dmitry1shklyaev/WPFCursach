@@ -37,7 +37,7 @@
             </Grid.RowDefinitions>
 
             <Label Content="ФИО" HorizontalAlignment="Center" Grid.Row="0"/>
-            <TextBox x:Name="selectedPupilTextBox" Grid.Row="1" FontSize="16"/>
+            <TextBox x:Name="selectedPupilTextBox" Grid.Row="1" FontSize="16" MaxLength="58"/>
 
             <Label Content="Класс" HorizontalAlignment="Center" Grid.Row="4"/>
             <ComboBox x:Name="selectedClassComboBox" Grid.Row="4" FontSize="16" Margin="0,26,0,0" Grid.RowSpan="2" Height="26" VerticalAlignment="Top"/>

@@ -54,17 +54,17 @@ namespace WPFCursach.Forms
                 System.Windows.Forms.MessageBox.Show("Пожалуйста, введите название предмета, который вы хотите добавить!");
                 return;
             }
-            foreach (var sbj in SubjectsController.GetSubject())
+            if (SubjectsController.GetSubject().Any(sbj => sbj.name == writtenSubjectTextBox.Text))
             {
-                if (sbj.name == writtenSubjectTextBox.Text)
-                {
-                    System.Windows.Forms.MessageBox.Show("Такой предмет уже существует!");
-                    return;
-                }
+                System.Windows.Forms.MessageBox.Show("Такой предмет уже существует!");
+                return;
             }
             Subject subject = new Subject();
             subject.name = writtenSubjectTextBox.Text.Substring(0, 1).ToUpper() + writtenSubjectTextBox.Text.Substring(1);
-            SubjectsController.AddSubject(subject);
+            if (SubjectsController.AddSubject(subject) == true)
+            {
+                System.Windows.Forms.MessageBox.Show($"Предмет \"{subject.name}\" успешно добавлен!");
+            }
             Classes.FrameSingleton.getFrame().Navigate(new Subjects());
         }
 
@@ -77,15 +77,16 @@ namespace WPFCursach.Forms
             }
             Subject subject = new Subject();
             subject.name = subjectsComboBox.Text;
-            foreach (var subj in SubjectsController.GetSubject())
+            var matchingSubject = SubjectsController.GetSubject().FirstOrDefault(subj => subj.name == subject.name);
+            if (matchingSubject != null)
             {
-                if (subj.name == subject.name)
-                {
-                    subject.id = subj.id;
-                    break;
-                }
+                subject.id = matchingSubject.id;
             }
-            SubjectsController.DropSubject(subject);
+            if(SubjectsController.DropSubject(subject) == true)
+            {
+                System.Windows.Forms.MessageBox.Show($"Предмет \"{subject.name}\" успешно удалён!");
+            }
+
             Classes.FrameSingleton.getFrame().Navigate(new Subjects());
         }
     }

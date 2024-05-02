@@ -12,6 +12,5 @@ namespace BaseHandler.DBase.Models
         public int grade {  get; set; }
         public Subject subject { get; set; }
         public Pupil pupil {  get; set; }
-        public string subject_name { get; private set; }
     }
 }

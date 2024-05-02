@@ -37,13 +37,13 @@
             </Grid.RowDefinitions>
 
             <Label Content="ФИО" HorizontalAlignment="Center" Grid.Row="0"/>
-            <TextBox x:Name="selectedTeacherTextBox" Grid.Row="1" FontSize="16"/>
+            <TextBox x:Name="selectedTeacherTextBox" Grid.Row="1" FontSize="16" MaxLength="300"/>
 
             <Label Content="Предмет" HorizontalAlignment="Center" Grid.Row="2"/>
             <ComboBox x:Name="selectedSubjectComboBox" Grid.Row="3" FontSize="16"/>
 
             <Label Content="Кабинет" HorizontalAlignment="Center" Grid.Row="4"/>
-            <TextBox x:Name="selectedAuditoryTextBox" Grid.Row="4" FontSize="16" PreviewTextInput="textBox_PreviewTextInput" Margin="0,26,0,0" Grid.RowSpan="2" Height="26" VerticalAlignment="Top"/>
+            <TextBox x:Name="selectedAuditoryTextBox" Grid.Row="4" FontSize="16" PreviewTextInput="textBox_PreviewTextInput" Margin="0,26,0,0" Grid.RowSpan="2" Height="26" VerticalAlignment="Top" MaxLength="7"/>
 
             <Label Content="ID" HorizontalAlignment="Center" Grid.Row="5" Margin="0,24,0,203"/>
             <TextBox x:Name="selectedIdTextBox" Grid.Row="5" FontSize="16" PreviewTextInput="textBox_PreviewTextInput" Height="26" VerticalAlignment="Top" Margin="0,49,0,0" IsEnabled="False"/>
