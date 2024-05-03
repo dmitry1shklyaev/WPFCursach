@@ -32,17 +32,5 @@ namespace BaseHandler.DBase
             }
             return _conn;
         }
-
-        public static void closeConnection() 
-        {
-            try
-            {
-                _conn.Close();
-            }
-            catch 
-            {
-                _conn = null;
-            }
-        }
     }
 }

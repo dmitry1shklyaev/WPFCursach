@@ -63,8 +63,7 @@ namespace BaseHandler.DBase
                 
                 int count = (int)cmd.ExecuteScalar();
 
-                if (count == 1) return 1;
-                else return 0;
+                return count;
 
             }
             catch (Exception exc)
@@ -73,9 +72,10 @@ namespace BaseHandler.DBase
                 return -1;
             }
         }
+
+        private static List<Mark> marks;
         public static List<Mark> GetMarks()
         {
-            List<Mark> marks = new List<Mark>();
             SqlConnection con = DBaseConnector.getBaseConnection();
             try
             {
@@ -89,6 +89,7 @@ namespace BaseHandler.DBase
 
                 if (reader.HasRows)
                 {
+                    marks = new List<Mark>();
                     while (reader.Read())
                     {
                         Mark mark = new Mark();

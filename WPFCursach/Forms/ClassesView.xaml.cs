@@ -115,7 +115,7 @@ namespace WPFCursach.Forms
 
                 return number * 100 + (int)letter[0];
             }).ToList();
-        }
+        }   
 
         private void backToMenu_Click(object sender, RoutedEventArgs e)
         {

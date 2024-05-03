@@ -112,12 +112,14 @@ namespace WPFCursach.Forms
             {
                 if (MarksController.AddMark(mark) == true)
                 {
-                    System.Windows.Forms.MessageBox.Show($"Оценка \"{mark.grade}\" ученику \"{mark.pupil.pupil_name}\" по предмету \"{mark.subject.name}\" успешно проставлена!");
+                    System.Windows.Forms.MessageBox.Show($"Оценка \"{mark.grade}\" ученику \"{mark.pupil.pupil_name}\"" +
+                        $" по предмету \"{mark.subject.name}\" успешно проставлена!");
                 }
             }
             else if (MarksController.CheckDuplicatesMarks(mark) == 1)
             {
-                DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"Оценка у ученика \"{selectedPupil.pupil_name}\" по предмету \"{selectedSubject}\" уже имеется!\nИзменить оценку?", "Изменить оценку?", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = System.Windows.Forms.MessageBox.Show($"Оценка у ученика \"{selectedPupil.pupil_name}\"" +
+                    $" по предмету \"{selectedSubject}\" уже имеется!\nИзменить оценку?", "Изменить оценку?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     if (MarksController.EditMark(mark) == true)

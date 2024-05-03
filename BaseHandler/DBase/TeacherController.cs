@@ -12,9 +12,9 @@ namespace BaseHandler.DBase
 {
     public class TeacherController
     {
+        private static List<Teacher> teachers;
         public static List<Teacher> GetTeachers() 
         {
-            List<Teacher> teachers = new List<Teacher>();
             SqlConnection con = DBaseConnector.getBaseConnection();
             try 
             {
@@ -28,7 +28,8 @@ namespace BaseHandler.DBase
 
                 if (reader.HasRows) 
                 {
-                    while(reader.Read()) 
+                    teachers = new List<Teacher>();
+                    while (reader.Read()) 
                     {
                         Teacher teacher = new Teacher();
                         teacher.teacher_id = reader.GetInt32(0);

@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 namespace WPFCursach.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для SubjectsAdd.xaml
+    /// Логика взаимодействия для Subjects.xaml
     /// </summary>
     public partial class Subjects : Page
     {
